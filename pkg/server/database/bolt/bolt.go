@@ -92,6 +92,7 @@ func (b *Bolt) Get(ctx context.Context, name string) (user *database.User) {
 	if err != nil {
 		log.Fatalf("Database corruption: %v", err)
 	}
+	u.Name = name
 	user = &u
 	return
 }
