@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"os"
 
 	bolt "go.etcd.io/bbolt"
 
@@ -24,6 +25,11 @@ const (
 
 // New returns a new Bolt implementation.
 func New(directory string) (*Bolt, error) {
+	err := os.Mkdir("data", 0750)
+	if err != nil && !os.IsExist(err) {
+		return nil, err
+	}
+
 	db, err := bolt.Open(fmt.Sprintf("%s/%s", directory, dbName), 0600, nil)
 	if err != nil {
 		return nil, err
