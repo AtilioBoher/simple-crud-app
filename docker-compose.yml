@@ -1,0 +1,40 @@
+version: '3.8'
+
+volumes:
+  mysql_data:
+    name: ${VOLUME_NAME}
+
+networks:
+  default:
+
+
+services:
+  
+  db:
+    container_name: mySqlDB
+    build:
+      context: .
+      dockerfile: db.Dockerfile
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "3306:3306"
+    networks:
+      - default
+    volumes:
+      - mysql_data:/var/lib/mysql
+      
+  api:
+    container_name: goApi
+    build:
+      context: .
+      dockerfile: api.Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
